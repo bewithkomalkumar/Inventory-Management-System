@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
+const { Config } = require("../config/config");
 
 const connectDatabase = async () => {
-  const db = await mongoose.connect(
-    `mongodb+srv://komalkumar:komal123@cluster0.cmcdqto.mongodb.net/IMS`
-  );
+  const db = await mongoose.connect(Config.MongoUrl);
   return db;
 };
 
