@@ -1,10 +1,50 @@
-import React from "react";
-
+import React, { useState } from "react";
+import axios from "axios";
 const AddGrocery = () => {
+  const [item, setItem] = useState({
+    product_name: "",
+    quantity: 0,
+    price_per_unit: 0,
+  });
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (
+      item.product_name !== "" &&
+      item.price_per_unit !== 0 &&
+      item.quantity !== 0
+    ) {
+      axios
+        .post(`http://localhost:8000/grocery/add`, item)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+          alert("Error");
+        });
+    } else {
+      alert("Values missing");
+      return;
+    }
+
     alert("Item Added!");
+
+    setItem({
+      product_name: "",
+      quantity: 0,
+      price_per_unit: 0,
+    });
   };
+  const handleInput = (e) => {
+    const name = e.target.name;
+    let value = e.target.value;
+    if (name === "quantity" || name === "price_per_unit") {
+      value = Number(value);
+    }
+
+    setItem({ ...item, [name]: value });
+  };
+  console.log(item);
 
   return (
     <div className=" w-[50%] m-auto mt-[50px] p-4 shadow-lg border-2 rounded-md ">
@@ -17,7 +57,10 @@ const AddGrocery = () => {
         </label>
         <input
           type="text"
+          name="product_name"
+          onChange={handleInput}
           className="border text-lg "
+          value={item.product_name}
           placeholder="Enter Product Name"
         />
 
@@ -26,7 +69,10 @@ const AddGrocery = () => {
         </label>
         <input
           type="number"
+          name="quantity"
           className="border text-lg"
+          onChange={handleInput}
+          value={item.quantity === 0 ? "" : item.quantity}
           placeholder="Enter Quantity"
         />
 
@@ -35,6 +81,9 @@ const AddGrocery = () => {
         </label>
         <input
           type="number"
+          name="price_per_unit"
+          onChange={handleInput}
+          value={item.price_per_unit === 0 ? "" : item.price_per_unit}
           className="border text-lg"
           placeholder="Enter Price"
         />
